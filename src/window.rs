@@ -1,6 +1,7 @@
 use crate::element::Element;
-
+use crate::event::EventLoop;
 use crate::platform;
+use crate::mouse::MouseHandler;
 
 pub struct WindowDimensions {
     width: usize,
@@ -45,7 +46,7 @@ impl Window {
     }
 }
 
-pub trait WindowImpl: Drop {
+pub trait WindowImpl: Drop + EventLoop + MouseHandler {
     fn open(
         &mut self,
         dimensions: WindowDimensions,
