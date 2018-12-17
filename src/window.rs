@@ -1,5 +1,4 @@
 use crate::element::Element;
-use crate::event::EventLoop;
 use crate::platform;
 use crate::mouse::MouseHandler;
 
@@ -46,7 +45,7 @@ impl Window {
     }
 }
 
-pub trait WindowImpl: Drop + EventLoop + MouseHandler {
+pub trait WindowImpl: Drop + MouseHandler {
     fn open(
         &mut self,
         dimensions: WindowDimensions,
