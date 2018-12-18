@@ -1,3 +1,5 @@
+use log::*;
+
 use crate::window::WindowImpl;
 use crate::window::WindowDimensions;
 use crate::element::Element;
@@ -7,16 +9,27 @@ use crate::mouse::{Mouse, MouseHandler, MouseButton, MouseCursor};
 pub struct WindowHandle {
 }
 
+// Create the X11 structure, without actually opening the window.
+// TODO: Set up X11 connection, etc.
 pub fn create_platform_window() -> Box<WindowImpl> {
-    unimplemented!();
+    info!("X11::create_platform_window()");
+    Box::new(X11::new())
 }
 
 pub struct X11 {
 }
 
+impl X11 {
+    fn new() -> Self {
+        Self {}
+    }
+}
+
+// TODO: remove this lint
+#[allow(unused_variables)]
 impl WindowImpl for X11 {
     fn open(&mut self, dimensions: WindowDimensions, title: &str, parent: Option<platform::WindowHandle>) {
-        unimplemented!();
+        info!("WindowImpl<X11>::open()");
     }
 
     fn draw(&mut self, force_redraw: bool) -> bool {
@@ -42,10 +55,12 @@ impl WindowImpl for X11 {
 
 impl Drop for X11 {
     fn drop(&mut self) {
-        unimplemented!();
+        info!("Drop<X11>::drop()");
     }
 }
 
+// TODO: remove this lint
+#[allow(unused_variables)]
 impl MouseHandler for X11 {
     fn mouse_press(&mut self, button: MouseButton, x: isize, y: isize) {
         unimplemented!();

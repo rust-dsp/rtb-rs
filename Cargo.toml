@@ -1,7 +1,14 @@
 [package]
 name = "rtb-rs"
 version = "0.1.0"
-authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, and others...(tbd)"]
+authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, Charles Saracco <crsaracco@gmail.com>, and others...(tbd)"]
 edition = "2018"
 
 [dependencies]
+log = "0.4" # TODO: probably want this, right?
+
+
+# TODO: conditional dependency (only use if X11)?
+[dependencies.xcb]
+version = "0.8"
+features = ["thread"]

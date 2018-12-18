@@ -1,3 +1,5 @@
+extern crate log;
+
 pub mod element;
 pub mod event;
 pub mod mouse;
