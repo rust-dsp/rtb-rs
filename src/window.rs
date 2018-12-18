@@ -3,8 +3,8 @@ use crate::platform;
 use crate::mouse::MouseHandler;
 
 pub struct WindowDimensions {
-    width: usize,
-    height: usize,
+    pub width: usize,
+    pub height: usize,
 }
 
 pub struct Window {
