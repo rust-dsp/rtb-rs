@@ -5,3 +5,4 @@ authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, and others...(tbd)"]
 edition = "2018"
 
 [dependencies]
+log = "0.4"
