@@ -1,6 +1,7 @@
 use crate::element::Element;
 use crate::platform;
 use crate::mouse::MouseHandler;
+use log::*;
 
 pub struct WindowDimensions {
     pub width: usize,
@@ -13,6 +14,7 @@ pub struct Window {
 
 impl Window {
     pub fn open(dimensions: WindowDimensions, title: &str) -> Self {
+        info!("Window::open()");
         Self::open_under(None, dimensions, title)
     }
     pub fn open_under(
@@ -20,11 +22,13 @@ impl Window {
         dimensions: WindowDimensions,
         title: &str,
     ) -> Self {
+        info!("Window::open_under()");
         let mut platform_window = platform::create_platform_window();
         platform_window.open(dimensions, title, parent);
         Window { platform_window }
     }
     pub fn close(self) {
+        info!("Window::close()");
         //TODO: cleanup
         //drop
     }

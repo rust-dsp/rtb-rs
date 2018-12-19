@@ -55,7 +55,9 @@ impl WindowImpl for X11 {
 
 impl Drop for X11 {
     fn drop(&mut self) {
-        info!("Drop<X11>::drop()");
+        // TODO: actually drop
+        // (removed unimplemented!() call so the plugin doesn't crash)
+        info!("WindowImpl<X11>::drop()");
     }
 }
 
