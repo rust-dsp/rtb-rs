@@ -5,7 +5,7 @@ authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, Charles Saracco <crsarac
 edition = "2018"
 
 [dependencies]
-log = "0.4" # TODO: probably want this, right?
+log = "0.4"
 
 
 # TODO: conditional dependency (only use if X11)?

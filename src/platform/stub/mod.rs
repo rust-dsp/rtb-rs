@@ -40,7 +40,6 @@ impl Drop for PlatformWindow {
     }
 }
 
-
 impl MouseHandler for PlatformWindow {
     fn mouse_press(&mut self, button: MouseButton, x: isize, y: isize) {
         unimplemented!()

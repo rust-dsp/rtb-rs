@@ -1,10 +1,10 @@
 use log::*;
 
-use crate::window::WindowImpl;
-use crate::window::WindowDimensions;
 use crate::element::Element;
+use crate::mouse::{Mouse, MouseButton, MouseCursor, MouseHandler};
 use crate::platform;
-use crate::mouse::{Mouse, MouseHandler, MouseButton, MouseCursor};
+use crate::window::WindowDimensions;
+use crate::window::WindowImpl;
 use std::borrow::Borrow;
 
 mod x_handle;
@@ -15,79 +15,106 @@ pub struct WindowHandle {
 
 impl WindowHandle {
     pub fn new(id: u32) -> Self {
-        Self {
-            id
-        }
+        Self { id }
     }
 }
 
-// Create the X11 structure, without actually opening the window.
-// TODO: Set up X11 connection, etc.
 pub fn create_platform_window() -> Box<WindowImpl> {
     info!("X11::create_platform_window()");
-    Box::new(X11::new())
+
+    // Create an X11 handle
+    let x_handle = x_handle::XHandle::new();
+
+    Box::new(X11 {
+        x_handle,
+        draw_context: None,
+        window_handle: None,
+        window_dimensions: None,
+    })
 }
 
 pub struct X11 {
     x_handle: x_handle::XHandle,
+    draw_context: Option<u32>,
+    window_handle: Option<u32>,
+    window_dimensions: Option<WindowDimensions>,
 }
 
-impl X11 {
-    fn new() -> Self {
-        Self {
-            x_handle: x_handle::XHandle::new(),
-        }
-    }
-}
+impl X11 {}
 
 // TODO: remove this lint
 #[allow(unused_variables)]
 impl WindowImpl for X11 {
-    fn open(&mut self, dimensions: WindowDimensions, title: &str, parent: Option<platform::WindowHandle>) {
+    fn open(
+        &mut self,
+        dimensions: WindowDimensions,
+        title: &str,
+        parent: Option<platform::WindowHandle>,
+    ) {
         info!("WindowImpl<X11>::open()");
 
         if parent.is_none() {
             info!("No parent...?");
+            // TODO: handle this correctly. Just create a "root" window
+            // instead of trying to attach it to parent.
         }
         let parent_id = parent.unwrap().id; // TODO: error handle instead of unwrap
         info!("Parent id: {}", parent_id);
 
         // Create a draw context
-        // TODO: save the draw context for later
         let conn = self.x_handle.conn();
         let setup = conn.get_setup();
-        let screen = setup.roots().nth(self.x_handle.screen_num() as usize).unwrap();
+        let screen = setup
+            .roots()
+            .nth(self.x_handle.screen_num() as usize)
+            .unwrap();
         let draw_context = conn.generate_id();
-        xcb::create_gc(conn.borrow(), draw_context, parent_id, &[
-            (xcb::GC_FOREGROUND, screen.white_pixel()),
-            (xcb::GC_GRAPHICS_EXPOSURES, 0),
-        ]);
+        xcb::create_gc(
+            conn.borrow(),
+            draw_context,
+            parent_id,
+            &[
+                (xcb::GC_FOREGROUND, screen.white_pixel()),
+                (xcb::GC_GRAPHICS_EXPOSURES, 0),
+            ],
+        );
 
         // Create the actual window
-        // TODO: save this handle for later as well
         let window_handle = conn.generate_id();
-        xcb::create_window(&conn,
-                           xcb::COPY_FROM_PARENT as u8,
-                           window_handle,
-                           parent_id,
-                           0, // TODO: save this somewhere instead of magic number
-                           0, // TODO: save this somewhere instead of magic number
-                           1000, // TODO: save this somewhere instead of magic number
-                           1000, // TODO: save this somewhere instead of magic number
-                           0,
-                           xcb::WINDOW_CLASS_INPUT_OUTPUT as u16,
-                           screen.root_visual(), &[
+        xcb::create_window(
+            &conn,
+            xcb::COPY_FROM_PARENT as u8,
+            window_handle,
+            parent_id,
+            dimensions.x as i16,
+            dimensions.y as i16,
+            dimensions.width as u16,
+            dimensions.height as u16,
+            0,
+            xcb::WINDOW_CLASS_INPUT_OUTPUT as u16,
+            screen.root_visual(),
+            &[
                 (xcb::CW_BACK_PIXEL, screen.black_pixel()),
-                (xcb::CW_EVENT_MASK,
-                 xcb::EVENT_MASK_EXPOSURE |
-                     xcb::EVENT_MASK_BUTTON_PRESS |
-                     xcb::EVENT_MASK_BUTTON_RELEASE |
-                     xcb::EVENT_MASK_BUTTON_1_MOTION
+                (
+                    xcb::CW_EVENT_MASK,
+                    xcb::EVENT_MASK_EXPOSURE
+                        | xcb::EVENT_MASK_BUTTON_PRESS
+                        | xcb::EVENT_MASK_BUTTON_RELEASE
+                        | xcb::EVENT_MASK_BUTTON_1_MOTION,
                 ),
-            ]
+            ],
         );
+
+        // Display the window
         xcb::map_window(&conn, window_handle);
+
+        // Flush the X connection queue so that all the commands go through
         conn.flush();
+
+        // Save all the inputs for later
+        self.draw_context = Some(draw_context);
+        self.window_handle = Some(window_handle);
+        self.window_dimensions = Some(dimensions);
     }
 
     fn draw(&mut self, force_redraw: bool) -> bool {
@@ -112,9 +139,10 @@ impl WindowImpl for X11 {
 }
 
 impl Drop for X11 {
+    /// Destroy the window.
     fn drop(&mut self) {
-        // TODO: actually drop
-        // (removed unimplemented!() call so the plugin doesn't crash)
+        // TODO: Drop stuff
+        // (removed unimplemented!() call for now so the plugin doesn't crash)
         info!("WindowImpl<X11>::drop()");
     }
 }

@@ -1,3 +1,1 @@
-pub trait Element {
-    
-}
+pub trait Element {}

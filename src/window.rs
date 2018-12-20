@@ -1,11 +1,13 @@
 use crate::element::Element;
-use crate::platform;
 use crate::mouse::MouseHandler;
+use crate::platform;
 use log::*;
 
 pub struct WindowDimensions {
     pub width: usize,
     pub height: usize,
+    pub x: usize,
+    pub y: usize,
 }
 
 pub struct Window {
@@ -50,13 +52,17 @@ impl Window {
 }
 
 pub trait WindowImpl: Drop + MouseHandler {
+    /// Create a window and display it
     fn open(
         &mut self,
         dimensions: WindowDimensions,
         title: &str,
         parent: Option<platform::WindowHandle>,
     );
+
+    /// (Re)draw the window.
     fn draw(&mut self, force_redraw: bool) -> bool;
+
     fn focus_element(&mut self, element: &mut Element);
     fn lock(&mut self);
     fn unlock(&mut self);
