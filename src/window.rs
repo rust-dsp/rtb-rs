@@ -1,5 +1,5 @@
 use crate::element::Element;
-use crate::platform;
+use crate::platform::PlatformWindow;
 use crate::mouse::MouseHandler;
 
 use std::os::raw::c_void;
@@ -14,17 +14,12 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn open(dimensions: WindowDimensions, title: &str) -> Self {
-        Self::open_under(None, dimensions, title)
-    }
-    pub fn open_under(
-        parent: Option<platform::WindowHandle>,
-        dimensions: WindowDimensions,
-        title: &str,
-    ) -> Self {
-        let mut platform_window = platform::create_platform_window();
-        platform_window.open(dimensions, title, parent);
-        Window { platform_window }
+    pub fn attach(parent: *mut c_void, _dimensions: Size, _title: &str) -> Self {
+        Window  {
+            platform_window: Box::new(PlatformWindow {
+                id: parent
+            })
+        }
     }
     pub fn close(self) {
         //TODO: cleanup
@@ -48,12 +43,6 @@ impl Window {
 }
 
 pub trait WindowImpl: Drop + MouseHandler {
-    fn open(
-        &mut self,
-        dimensions: WindowDimensions,
-        title: &str,
-        parent: Option<platform::WindowHandle>,
-    );
     fn draw(&mut self, force_redraw: bool) -> bool;
     fn focus_element(&mut self, element: &mut Element);
     fn lock(&mut self);
