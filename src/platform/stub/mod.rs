@@ -2,7 +2,7 @@ use crate::element::Element;
 use crate::event::EventLoop;
 use crate::mouse::*;
 use crate::platform;
-use crate::window::{WindowDimensions, WindowImpl};
+use crate::window::{Size, WindowImpl};
 
 #[derive(Default)]
 pub struct WindowHandle {}
@@ -12,7 +12,7 @@ struct PlatformWindow {}
 impl WindowImpl for PlatformWindow {
     fn open(
         &mut self,
-        dimensions: WindowDimensions,
+        dimensions: Size,
         title: &str,
         parent: Option<platform::WindowHandle>,
     ) {

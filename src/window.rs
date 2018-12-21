@@ -3,9 +3,11 @@ use crate::event::EventLoop;
 use crate::platform;
 use crate::mouse::MouseHandler;
 
-pub struct WindowDimensions {
-    width: usize,
-    height: usize,
+use std::os::raw::c_void;
+
+pub struct Size {
+    pub width: i32,
+    pub height: i32,
 }
 
 pub struct Window {
