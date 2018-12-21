@@ -1,5 +1,4 @@
 use crate::element::Element;
-use crate::event::EventLoop;
 use crate::mouse::*;
 use crate::platform;
 use crate::window::{Size, WindowImpl};
@@ -41,14 +40,6 @@ impl Drop for PlatformWindow {
     }
 }
 
-impl EventLoop for PlatformWindow {
-    fn start(&self) {
-        unimplemented!()
-    }
-    fn stop(&self) {
-        unimplemented!()
-    }
-}
 
 impl MouseHandler for PlatformWindow {
     fn mouse_press(&mut self, button: MouseButton, x: isize, y: isize) {
