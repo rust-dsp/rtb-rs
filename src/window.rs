@@ -2,7 +2,7 @@ use crate::element::Element;
 use crate::platform::PlatformWindow;
 use crate::mouse::MouseHandler;
 
-use std::os::raw::c_void;
+use std::ffi::c_void;
 
 pub struct Size {
     pub width: i32,
