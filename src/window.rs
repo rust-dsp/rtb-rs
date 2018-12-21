@@ -48,4 +48,12 @@ pub trait WindowImpl: Drop + MouseHandler {
     fn lock(&mut self);
     fn unlock(&mut self);
     fn reinit(&mut self);
+    fn resize(&mut self, _size: Size) { unimplemented!() }
+    fn set_title(&mut self, _title: &str) { unimplemented!() }
+
+    fn draw(&mut self, _force_redraw: bool) -> bool { unimplemented!() }
+    fn focus_element(&mut self, _element: &mut Element) { unimplemented!() }
+    fn lock(&mut self) { unimplemented!() }
+    fn unlock(&mut self) { unimplemented!() }
+    fn reinit(&mut self) { unimplemented!() }
 }
