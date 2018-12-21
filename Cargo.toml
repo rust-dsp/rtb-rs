@@ -1,7 +1,10 @@
 [package]
 name = "rtb-rs"
 version = "0.1.0"
-authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, and others...(tbd)"]
+authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, Rob Saunders <rob@wearebrandnew.com>, and others...(tbd)"]
 edition = "2018"
 
 [dependencies]
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = "0.18.4"
