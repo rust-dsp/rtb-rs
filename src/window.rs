@@ -14,12 +14,15 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn attach(parent: *mut c_void, _dimensions: Size, _title: &str) -> Self {
-        Window  {
-            platform_window: Box::new(PlatformWindow {
-                id: parent
-            })
-        }
+    pub fn attach(parent: *mut c_void, dimensions: Size, title: &str) -> Self {
+        let mut window = Window {
+            platform_window: Box::new(PlatformWindow::attach(parent))
+        };
+
+        window.platform_window.resize(dimensions);
+        window.platform_window.set_title(title);
+
+        window
     }
     pub fn close(self) {
         //TODO: cleanup
@@ -43,11 +46,8 @@ impl Window {
 }
 
 pub trait WindowImpl: Drop + MouseHandler {
-    fn draw(&mut self, force_redraw: bool) -> bool;
-    fn focus_element(&mut self, element: &mut Element);
-    fn lock(&mut self);
-    fn unlock(&mut self);
-    fn reinit(&mut self);
+    fn attach(parent: *mut c_void) -> PlatformWindow where Self: Sized;
+
     fn resize(&mut self, _size: Size) { unimplemented!() }
     fn set_title(&mut self, _title: &str) { unimplemented!() }
 
