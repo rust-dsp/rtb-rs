@@ -1,3 +1,6 @@
+#[cfg(target_os = "macos")]
+#[macro_use] extern crate objc;
+
 pub mod element;
 pub mod event;
 pub mod mouse;

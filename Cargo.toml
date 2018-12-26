@@ -8,3 +8,4 @@ edition = "2018"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = "0.18.4"
+objc = "0.2.3"

@@ -47,10 +47,8 @@ impl Window {
 
 pub trait WindowImpl: Drop + MouseHandler {
     fn attach(parent: *mut c_void) -> PlatformWindow where Self: Sized;
-
     fn resize(&mut self, _size: Size) { unimplemented!() }
     fn set_title(&mut self, _title: &str) { unimplemented!() }
-
     fn draw(&mut self, _force_redraw: bool) -> bool { unimplemented!() }
     fn focus_element(&mut self, _element: &mut Element) { unimplemented!() }
     fn lock(&mut self) { unimplemented!() }
