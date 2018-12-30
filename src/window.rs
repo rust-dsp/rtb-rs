@@ -19,7 +19,6 @@ impl Window {
         let mut window = Window {
             platform_window: Box::new(PlatformWindow::attach(parent))
         };
-
         window.platform_window.resize(dimensions);
         window.platform_window.set_title(title);
 
@@ -49,8 +48,12 @@ impl Window {
 
 pub trait WindowImpl: Drop + MouseHandler {
     fn attach(parent: *mut c_void) -> PlatformWindow where Self: Sized;
-    fn resize(&mut self, _size: Size) { unimplemented!() }
-    fn set_title(&mut self, _title: &str) { unimplemented!() }
+    fn resize(&mut self, _size: Size) {
+        info!("Window::resize()");
+    }
+    fn set_title(&mut self, _title: &str) {
+        info!("Window::set_title()");
+    }
     fn draw(&mut self, _force_redraw: bool) -> bool { unimplemented!() }
     fn focus_element(&mut self, _element: &mut Element) { unimplemented!() }
     fn lock(&mut self) { unimplemented!() }
