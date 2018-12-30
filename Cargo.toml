@@ -1,7 +1,6 @@
 [package]
 name = "rtb-rs"
 version = "0.1.0"
-
 authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, Rob Saunders <rob@wearebrandnew.com>, Charles Saracco <crsaracco@gmail.com>, and others...(tbd)"]
 edition = "2018"
 
