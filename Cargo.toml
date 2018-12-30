@@ -1,14 +1,16 @@
 [package]
 name = "rtb-rs"
 version = "0.1.0"
-authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, Charles Saracco <crsaracco@gmail.com>, and others...(tbd)"]
+
+authors = ["Alex Zywicki <alexander.zywicki@gmail.com>, Rob Saunders <rob@wearebrandnew.com>, Charles Saracco <crsaracco@gmail.com>, and others...(tbd)"]
 edition = "2018"
 
 [dependencies]
 log = "0.4"
 
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = "0.18.4"
+objc = "0.2.3"
 
-# TODO: conditional dependency (only use if X11)?
-[dependencies.xcb]
-version = "0.8"
-features = ["thread"]
+[target.'cfg(all(unix, not(target_os = "macos")))'.dependencies]
+xcb = { version = "0.8", features = ["thread"] }

@@ -1,13 +1,13 @@
 use crate::element::Element;
+use crate::platform::PlatformWindow;
 use crate::mouse::MouseHandler;
-use crate::platform;
+
+use std::ffi::c_void;
 use log::*;
 
-pub struct WindowDimensions {
-    pub width: usize,
-    pub height: usize,
-    pub x: usize,
-    pub y: usize,
+pub struct Size {
+    pub width: i32,
+    pub height: i32,
 }
 
 pub struct Window {
@@ -15,19 +15,15 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn open(dimensions: WindowDimensions, title: &str) -> Self {
-        info!("Window::open()");
-        Self::open_under(None, dimensions, title)
-    }
-    pub fn open_under(
-        parent: Option<platform::WindowHandle>,
-        dimensions: WindowDimensions,
-        title: &str,
-    ) -> Self {
-        info!("Window::open_under()");
-        let mut platform_window = platform::create_platform_window();
-        platform_window.open(dimensions, title, parent);
-        Window { platform_window }
+    pub fn attach(parent: *mut c_void, dimensions: Size, title: &str) -> Self {
+        let mut window = Window {
+            platform_window: Box::new(PlatformWindow::attach(parent))
+        };
+
+        window.platform_window.resize(dimensions);
+        window.platform_window.set_title(title);
+
+        window
     }
     pub fn close(self) {
         info!("Window::close()");
@@ -52,19 +48,12 @@ impl Window {
 }
 
 pub trait WindowImpl: Drop + MouseHandler {
-    /// Create a window and display it
-    fn open(
-        &mut self,
-        dimensions: WindowDimensions,
-        title: &str,
-        parent: Option<platform::WindowHandle>,
-    );
-
-    /// (Re)draw the window.
-    fn draw(&mut self, force_redraw: bool) -> bool;
-
-    fn focus_element(&mut self, element: &mut Element);
-    fn lock(&mut self);
-    fn unlock(&mut self);
-    fn reinit(&mut self);
+    fn attach(parent: *mut c_void) -> PlatformWindow where Self: Sized;
+    fn resize(&mut self, _size: Size) { unimplemented!() }
+    fn set_title(&mut self, _title: &str) { unimplemented!() }
+    fn draw(&mut self, _force_redraw: bool) -> bool { unimplemented!() }
+    fn focus_element(&mut self, _element: &mut Element) { unimplemented!() }
+    fn lock(&mut self) { unimplemented!() }
+    fn unlock(&mut self) { unimplemented!() }
+    fn reinit(&mut self) { unimplemented!() }
 }
