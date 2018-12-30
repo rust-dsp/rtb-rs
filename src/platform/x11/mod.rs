@@ -35,10 +35,7 @@ impl WindowImpl for PlatformWindow {
         // Create a draw context
         let conn = x_handle.conn();
         let setup = conn.get_setup();
-        let screen = setup
-            .roots()
-            .nth(x_handle.screen_num() as usize)
-            .unwrap();
+        let screen = setup.roots().nth(x_handle.screen_num() as usize).unwrap();
         let draw_context = conn.generate_id();
         xcb::create_gc(
             conn.borrow(),
@@ -57,8 +54,8 @@ impl WindowImpl for PlatformWindow {
             xcb::COPY_FROM_PARENT as u8,
             window_handle,
             parent_id,
-            0, // TODO: use Size or WindowDimensions or whatever
-            0, // TODO: use Size or WindowDimensions or whatever
+            0,    // TODO: use Size or WindowDimensions or whatever
+            0,    // TODO: use Size or WindowDimensions or whatever
             1000, // TODO: use Size or WindowDimensions or whatever
             1000, // TODO: use Size or WindowDimensions or whatever
             0,
@@ -119,5 +116,4 @@ impl Drop for PlatformWindow {
     }
 }
 
-impl MouseHandler for PlatformWindow {
-}
+impl MouseHandler for PlatformWindow {}

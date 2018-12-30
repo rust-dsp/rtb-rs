@@ -1,9 +1,9 @@
 use crate::element::Element;
-use crate::platform::PlatformWindow;
 use crate::mouse::MouseHandler;
+use crate::platform::PlatformWindow;
 
-use std::ffi::c_void;
 use log::*;
+use std::ffi::c_void;
 
 pub struct Size {
     pub width: i32,
@@ -17,7 +17,7 @@ pub struct Window {
 impl Window {
     pub fn attach(parent: *mut c_void, dimensions: Size, title: &str) -> Self {
         let mut window = Window {
-            platform_window: Box::new(PlatformWindow::attach(parent))
+            platform_window: Box::new(PlatformWindow::attach(parent)),
         };
         window.platform_window.resize(dimensions);
         window.platform_window.set_title(title);
@@ -47,16 +47,28 @@ impl Window {
 }
 
 pub trait WindowImpl: Drop + MouseHandler {
-    fn attach(parent: *mut c_void) -> PlatformWindow where Self: Sized;
+    fn attach(parent: *mut c_void) -> PlatformWindow
+    where
+        Self: Sized;
     fn resize(&mut self, _size: Size) {
         info!("Window::resize()");
     }
     fn set_title(&mut self, _title: &str) {
         info!("Window::set_title()");
     }
-    fn draw(&mut self, _force_redraw: bool) -> bool { unimplemented!() }
-    fn focus_element(&mut self, _element: &mut Element) { unimplemented!() }
-    fn lock(&mut self) { unimplemented!() }
-    fn unlock(&mut self) { unimplemented!() }
-    fn reinit(&mut self) { unimplemented!() }
+    fn draw(&mut self, _force_redraw: bool) -> bool {
+        unimplemented!()
+    }
+    fn focus_element(&mut self, _element: &mut Element) {
+        unimplemented!()
+    }
+    fn lock(&mut self) {
+        unimplemented!()
+    }
+    fn unlock(&mut self) {
+        unimplemented!()
+    }
+    fn reinit(&mut self) {
+        unimplemented!()
+    }
 }
