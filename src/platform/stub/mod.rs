@@ -9,12 +9,7 @@ pub struct WindowHandle {}
 struct PlatformWindow {}
 
 impl WindowImpl for PlatformWindow {
-    fn open(
-        &mut self,
-        dimensions: Size,
-        title: &str,
-        parent: Option<platform::WindowHandle>,
-    ) {
+    fn open(&mut self, dimensions: Size, title: &str, parent: Option<platform::WindowHandle>) {
         unimplemented!()
     }
     fn draw(&mut self, force_redraw: bool) -> bool {
@@ -39,7 +34,6 @@ impl Drop for PlatformWindow {
         unimplemented!()
     }
 }
-
 
 impl MouseHandler for PlatformWindow {
     fn mouse_press(&mut self, button: MouseButton, x: isize, y: isize) {
