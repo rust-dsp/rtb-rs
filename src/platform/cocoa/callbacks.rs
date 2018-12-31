@@ -5,6 +5,8 @@ use objc::runtime::{Object, Sel};
 use cocoa::appkit::NSEvent;
 use cocoa::base::{ id, YES, BOOL };
 
+use log::*;
+
 /*
 The bare-minimum steps required for an NSView to recieve events:
     - Override acceptsFirstResponder.
@@ -15,18 +17,18 @@ https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Event
 */
 
 pub extern "C" fn do_nsevent(_this: &Object, _: Sel, event: id) {
-    println!("NSEvent type: {:?}", unsafe { NSEvent::eventType(event) });
+    info!("NSEvent type: {:?}", unsafe { NSEvent::eventType(event) });
 }
 
 // @property(readonly) BOOL acceptsFirstResponder;
 // A view that is first responder accepts key events and action messages before other objects in a window.
 pub extern fn acceptsFirstResponder(_: &Object, _: Sel) -> BOOL {
-    println!("acceptsFirstResponder");
+    info!("acceptsFirstResponder");
     YES
 }
 
 // func acceptsFirstMouse(for event: NSEvent?) -> Bool
 pub extern fn acceptsFirstMouse(_: &Object, _: Sel, _theEvent: id) -> BOOL {
-    println!("acceptsFirstMouse");
+    info!("acceptsFirstMouse");
     YES
 }
