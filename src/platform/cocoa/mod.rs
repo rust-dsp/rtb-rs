@@ -11,7 +11,6 @@ use cocoa::base::{ id, nil, YES };
 use cocoa::foundation::{ NSString, NSSize };
 
 mod view;
-mod callbacks;
 mod util;
 
 pub struct PlatformWindow {
