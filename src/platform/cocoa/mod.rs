@@ -43,6 +43,8 @@ impl WindowImpl for PlatformWindow {
             let red = msg_send![class!(NSColor), redColor];
             view.setBackgroundColor_(red);
 
+            util::resize_view_to_window(view);
+
             PlatformWindow {
                 window: window,
                 view: view,
@@ -57,6 +59,8 @@ impl WindowImpl for PlatformWindow {
             let mut frame = NSWindow::frame(self.window);
             frame.size = nssize;
             self.window.setFrame_display_(frame, YES);
+
+            util::resize_view_to_window(self.view);
         }
     }
 
