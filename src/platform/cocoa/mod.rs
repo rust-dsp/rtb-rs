@@ -12,6 +12,7 @@ use cocoa::foundation::{ NSString, NSSize };
 
 mod view;
 mod callbacks;
+mod util;
 
 pub struct PlatformWindow {
     pub window: id,
@@ -24,7 +25,7 @@ impl WindowImpl for PlatformWindow {
             // todo: structure this setup code properly.
 
             // window
-            let window:id = parent as id;
+            let window:id = util::get_window_id(parent as id);
             window.setAcceptsMouseMovedEvents_(YES);
             window.makeKeyAndOrderFront_(nil);
             window.setOpaque_(YES);
@@ -44,7 +45,7 @@ impl WindowImpl for PlatformWindow {
             view.setBackgroundColor_(red);
 
             PlatformWindow {
-                window: parent as id,
+                window: window,
                 view: view,
             }
         }
