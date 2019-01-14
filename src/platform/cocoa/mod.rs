@@ -18,7 +18,26 @@ pub struct PlatformWindow {
     pub view: id,
 }
 
+pub struct WindowState {
+    pub name: String,
+    pub event_cb: Box<Fn(crate::event::Event)>,
+}
+
+impl PlatformWindow {
+    fn set_window_state(&self, state: WindowState) {
+        let mut state = Box::new(state);
+        let state_ptr: *mut WindowState = &mut *state;
+
+        unsafe {
+            let delegate: id = msg_send![self.window, delegate];
+            (&mut *delegate).set_ivar("windowState", state_ptr as *mut ::std::os::raw::c_void);
+            std::mem::forget(state);
+        }
+    }
+}
+
 impl WindowImpl for PlatformWindow {
+
     fn attach(parent: *mut c_void) -> PlatformWindow {
         unsafe {
             // todo: structure this setup code properly.
@@ -50,6 +69,11 @@ impl WindowImpl for PlatformWindow {
                 view: view,
             }
         }
+    }
+
+    fn add_events_hook(&mut self, events: Box<Fn(crate::event::Event)>) {
+        let state = WindowState{ event_cb: events, name: "Rob".to_string() };
+        self.set_window_state(state);
     }
 
     fn resize(&mut self, size: Size) {
