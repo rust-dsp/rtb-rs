@@ -1,7 +1,6 @@
 extern crate cocoa;
 
 use crate::platform::cocoa::view::*;
-use crate::mouse::*;
 use crate::window::{Size, WindowImpl};
 
 use core::ffi::c_void;
@@ -24,6 +23,14 @@ pub struct WindowState {
 }
 
 impl PlatformWindow {
+    // fn get_window_state<'a>(&self) -> &'a WindowState {
+    //     unsafe {
+    //         let delegate: id = msg_send![self.window, delegate];
+    //         let ivar: *const c_void = *(&*delegate).get_ivar("windowState");
+    //         &*(ivar as *const WindowState)
+    //     }
+    // }
+
     fn set_window_state(&self, state: WindowState) {
         let mut state = Box::new(state);
         let state_ptr: *mut WindowState = &mut *state;
@@ -99,5 +106,3 @@ impl WindowImpl for PlatformWindow {
 impl Drop for PlatformWindow {
     fn drop(&mut self) { }
 }
-
-impl MouseHandler for PlatformWindow {}

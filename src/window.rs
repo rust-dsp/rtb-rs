@@ -1,6 +1,4 @@
 use crate::event::*;
-use crate::element::Element;
-use crate::mouse::MouseHandler;
 use crate::platform::PlatformWindow;
 
 use log::*;
@@ -25,33 +23,11 @@ impl Window {
         window.platform_window.set_title(title);
         window.platform_window.add_events_hook(Box::new(events));
 
-        // events(Event::Mouse);
-
         window
-    }
-    pub fn close(self) {
-        info!("Window::close()");
-        //TODO: cleanup
-        //drop
-    }
-    pub fn draw(&mut self, force_redraw: bool) -> bool {
-        self.platform_window.draw(force_redraw)
-    }
-    pub fn focus_element(&mut self, element: &mut Element) {
-        self.platform_window.focus_element(element);
-    }
-    pub fn lock(&mut self) {
-        self.platform_window.lock();
-    }
-    pub fn unlock(&mut self) {
-        self.platform_window.unlock();
-    }
-    pub fn reinit(&mut self) {
-        unimplemented!();
     }
 }
 
-pub trait WindowImpl: Drop + MouseHandler {
+pub trait WindowImpl {
     fn attach(parent: *mut c_void) -> PlatformWindow
     where
         Self: Sized;
@@ -62,19 +38,4 @@ pub trait WindowImpl: Drop + MouseHandler {
         info!("Window::set_title()");
     }
     fn add_events_hook(&mut self, events: Box<Fn(Event)>);
-    fn draw(&mut self, _force_redraw: bool) -> bool {
-        unimplemented!()
-    }
-    fn focus_element(&mut self, _element: &mut Element) {
-        unimplemented!()
-    }
-    fn lock(&mut self) {
-        unimplemented!()
-    }
-    fn unlock(&mut self) {
-        unimplemented!()
-    }
-    fn reinit(&mut self) {
-        unimplemented!()
-    }
 }
