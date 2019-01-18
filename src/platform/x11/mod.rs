@@ -1,7 +1,6 @@
 use log::*;
 
-use crate::element::Element;
-use crate::mouse::MouseHandler;
+use crate::event::Event;
 use crate::window::WindowImpl;
 use std::borrow::Borrow;
 use std::ffi::c_void;
@@ -86,25 +85,7 @@ impl WindowImpl for PlatformWindow {
         }
     }
 
-    fn draw(&mut self, force_redraw: bool) -> bool {
-        unimplemented!();
-    }
-
-    fn focus_element(&mut self, element: &mut Element) {
-        unimplemented!();
-    }
-
-    fn lock(&mut self) {
-        unimplemented!();
-    }
-
-    fn unlock(&mut self) {
-        unimplemented!();
-    }
-
-    fn reinit(&mut self) {
-        unimplemented!();
-    }
+    fn add_events_hook(&mut self, _events: Box<Fn(Event)>) {}
 }
 
 impl Drop for PlatformWindow {
@@ -115,5 +96,3 @@ impl Drop for PlatformWindow {
         info!("WindowImpl<X11>::drop()");
     }
 }
-
-impl MouseHandler for PlatformWindow {}
