@@ -1,5 +1,6 @@
 use crate::event::*;
 use crate::platform::PlatformWindow;
+use crate::event::EventHandler;
 
 use log::*;
 use std::ffi::c_void;
@@ -14,14 +15,13 @@ pub struct Window {
 }
 
 impl Window {
-    pub fn attach<F: 'static>(parent: *mut c_void, dimensions: Size, title: &str, events: F) -> Self
-        where F: Fn(Event) {
+    pub fn attach(parent: *mut c_void, dimensions: Size, title: &str, event_handler: Box<EventHandler + Send>) -> Self {
         let mut window = Window {
             platform_window: Box::new(PlatformWindow::attach(parent)),
         };
         window.platform_window.resize(dimensions);
         window.platform_window.set_title(title);
-        window.platform_window.add_events_hook(Box::new(events));
+        window.platform_window.add_events_hook(event_handler);
 
         window
     }
@@ -37,5 +37,5 @@ pub trait WindowImpl {
     fn set_title(&mut self, _title: &str) {
         info!("Window::set_title()");
     }
-    fn add_events_hook(&mut self, events: Box<Fn(Event)>);
+    fn add_events_hook(&mut self, event_handler: Box<dyn EventHandler + Send>);
 }

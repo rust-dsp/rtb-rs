@@ -2,8 +2,12 @@ use log::*;
 
 use crate::event::Event;
 use crate::window::WindowImpl;
+use crate::event::EventHandler;
+
 use std::borrow::Borrow;
 use std::ffi::c_void;
+use std::sync::{Arc, Mutex};
+use std::thread;
 
 mod x_handle;
 
@@ -11,9 +15,20 @@ pub struct PlatformWindow {
     x_handle: x_handle::XHandle,
     draw_context: u32,
     window_handle: u32,
+    state: Arc<Mutex<Option<WindowState>>>,
 }
 
-impl PlatformWindow {}
+pub struct WindowState {
+    pub name: String,
+    pub event_handler: Box<dyn EventHandler + Send>,
+}
+
+impl PlatformWindow {
+    fn set_window_state(&mut self, state: WindowState) {
+        let mut x = self.state.lock().unwrap();
+        *x = Some(state);
+    }
+}
 
 impl WindowImpl for PlatformWindow {
     /// Create a window that is attached to the parent window.
@@ -78,14 +93,29 @@ impl WindowImpl for PlatformWindow {
         // Flush the X connection queue so that all the commands go through
         conn.flush();
 
+        // Start handling events
+        let state = Arc::new(Mutex::new(None));
+        let thread_conn = x_handle.conn();
+        let thread_state = state.clone();
+        thread::spawn(move || {
+            handle_events(thread_conn, thread_state);
+        });
+
         Self {
             x_handle,
             draw_context,
             window_handle,
+            state,
         }
     }
 
-    fn add_events_hook(&mut self, _events: Box<Fn(Event)>) {}
+    fn add_events_hook(&mut self, event_handler: Box<dyn EventHandler + Send>) {
+        let mut x = self.state.lock().unwrap();
+        *x = Some(WindowState{
+            name: "derp".into(),
+            event_handler,
+        });
+    }
 }
 
 impl Drop for PlatformWindow {
@@ -94,5 +124,31 @@ impl Drop for PlatformWindow {
         // TODO: Drop stuff
         // (removed unimplemented!() call for now so the plugin doesn't crash)
         info!("WindowImpl<X11>::drop()");
+    }
+}
+
+fn handle_events(conn: Arc<xcb::Connection>, state: Arc<Mutex<Option<WindowState>>>) {
+    loop {
+        let wait = conn.wait_for_event();
+        if let Some(event) = wait {
+            // If we don't have a state yet (and therefore no callback to call), don't do anything.
+            if state.lock().unwrap().is_none() {
+                continue;
+            }
+
+            // Otherwise, handle the event (by calling the callback)
+            match event.response_type() {
+                xcb::BUTTON_PRESS => {
+                    info!("xcb::BUTTON_PRESS");
+                    let mut mutex_lock = state.lock().unwrap();
+                    let mut window_state = mutex_lock.as_mut().unwrap();
+
+                    window_state.event_handler.handle(Event::LeftMouseDown);
+                }
+                _ => {
+                    // Ignore unknown events
+                }
+            }
+        }
     }
 }
