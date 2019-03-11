@@ -7,6 +7,13 @@ edition = "2018"
 [dependencies]
 log = "0.4"
 
+[target.'cfg(windows)'.dependencies.winapi]
+version = "0.3.6"
+features = [
+    "libloaderapi",
+    "winuser"
+]
+
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = "0.18.4"
 objc = "0.2.3"
