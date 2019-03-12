@@ -13,13 +13,8 @@ fn main() {
 
     let test_string = "test_string";
 
-    rtb_rs::Window::attach(
+    let _ = rtb_rs::Window::attach(
         unsafe { window.platform_window() } as *mut std::ffi::c_void,
-        rtb_rs::Size {
-            width: 640,
-            height: 480,
-        },
-        "my window",
         move |event| {
             println!("{:?}: {}", event, test_string);
         },
