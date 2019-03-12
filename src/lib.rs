@@ -3,9 +3,9 @@ extern crate log;
 #[macro_use]
 extern crate objc;
 
+pub mod event;
 pub mod platform;
 pub mod window;
-pub mod event;
 
 pub use self::event::*;
 pub use self::window::*;

@@ -1,7 +1,5 @@
 use crate::event::*;
 use crate::platform::PlatformWindow;
-
-use log::*;
 use std::ffi::c_void;
 
 pub struct Size {
@@ -15,7 +13,9 @@ pub struct Window {
 
 impl Window {
     pub fn attach<F: 'static>(parent: *mut c_void, dimensions: Size, title: &str, events: F) -> Self
-        where F: Fn(Event) {
+    where
+        F: Fn(Event),
+    {
         let mut window = Window {
             platform_window: Box::new(PlatformWindow::attach(parent)),
         };
@@ -32,10 +32,10 @@ pub trait WindowImpl {
     where
         Self: Sized;
     fn resize(&mut self, _size: Size) {
-        info!("Window::resize()");
+        unimplemented!();
     }
     fn set_title(&mut self, _title: &str) {
-        info!("Window::set_title()");
+        unimplemented!();
     }
     fn add_events_hook(&mut self, events: Box<Fn(Event)>);
 }
