@@ -13,3 +13,6 @@ objc = "0.2.3"
 
 [target.'cfg(all(unix, not(target_os = "macos")))'.dependencies]
 xcb = { version = "0.8", features = ["thread"] }
+
+[dev-dependencies]
+winit = "0.13.1"

@@ -4,3 +4,8 @@ A simple cross-platform windowing and event library for rust audio plugins. It d
 This project is a work in progress.
 
 If you wish to contribute, or wish to read more detailed information about this library and related topics please check the [wiki](https://github.com/rust-dsp/rust-vst/wiki/Rust-Audio-GUI-Development-Progress).
+
+To run the standalone window example, run:
+```bash
+cargo run --example window
+```
